@@ -1,0 +1,28 @@
+# Render blueprint — free web service for the API.
+#
+# Deploy from the Render dashboard ("New +" -> Blueprint) or let Render read
+# this file from the repo root. Environment variables are set in the dashboard
+# (or with sync:false prompts), never committed.
+services:
+  - type: web
+    name: cold-call-coach-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: CORS_ORIGINS
+        sync: false
+      - key: NODE_VERSION
+        value: 20.11.1

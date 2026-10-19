@@ -1,0 +1,16 @@
+{
+  "name": "cold-call-coach",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The screen a caller keeps open on a cold call: stage, what prospects say, what happened, their words, the next stage, the outcome.",
+  "scripts": {
+    "dev:db": "node scripts/dev-db.mjs",
+    "seed:stages": "node scripts/gen-seed.mjs",
+    "build": "npm --prefix frontend run build",
+    "check": "npm --prefix backend run check && npm --prefix frontend run check"
+  },
+  "devDependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "title": "The eight stages of a cold call",
+    "derived_from": "100 rewritten cold-call transcripts + the supplied stage sheet",
+    "sample_size": 100,
+    "note": "CONTENT_PENDING_TRANSCRIPT_ANALYSIS — placeholder structure, replaced after reading the supplied transcripts."
+  },
+  "stages": [
+    {
+      "number": 1,
+      "key": "opener",
+      "name": "Open",
+      "purpose": "Get a few seconds of attention and permission to keep talking, without sounding like a pitch.",
+      "caller_does": ["Say the name and why you are calling in one breath", "Pause and let them respond"],
+      "prospects_say": [
+        { "line": "Who's calling?", "mean": "They are screening, not rejecting. Name the company, not the product." },
+        { "line": "I'm in the middle of something.", "mean": "Asking for a cost, not saying no. Offer a time cost of under a minute." }
+      ],
+      "watch_out": "Talking for more than 12 seconds before they have said a word.",
+      "median_seconds": 18,
+      "exit_pct": 4.0,
+      "tap_options": ["Kept me on the line", "Asked who I am", "Cut me off", "Gave me a hard stop"]
+    },
+    {
+      "number": 2,
+      "key": "reason",
+      "name": "Reason for the call",
+      "purpose": "Say why them, why now, in one sentence they could repeat to a colleague.",
+      "caller_does": ["Name something specific to their business", "Keep it to one sentence"],
+      "prospects_say": [
+        { "line": "How did you get my number?", "mean": "They want provenance before content. Answer in five words and move on." },
+        { "line": "We already have someone for that.", "mean": "Open to the category, closed to a swap. Ask what they would change about it." }
+      ],
+      "watch_out": "Describing your product instead of their situation.",
+      "median_seconds": 25,
+      "exit_pct": 9.0,
+      "tap_options": ["Listened", "Went straight to an objection", "Asked how I found them", "Said they're set"]
+    },
+    {
+      "number": 3,
+      "key": "permission",
+      "name": "Ask permission",
+      "purpose": "Trade a question for a moment of their time so the rest of the call is theirs, not yours.",
+      "caller_does": ["Ask a short, answerable question", "Accept 'no' gracefully if they will not give it"],
+      "prospects_say": [
+        { "line": "You've got two minutes.", "mean": "A real door. Honour it out loud and the next stage gets easier." },
+        { "line": "Just tell me what it is.", "mean": "They want the shape of it first. Give one line, then ask the question." }
+      ],
+      "watch_out": "Asking permission twice — the second one sounds like a script.",
+      "median_seconds": 15,
+      "exit_pct": 5.0,
+      "tap_options": ["Said go ahead", "Wanted the pitch first", "Wouldn't commit", "Named a better time"]
+    },
+    {
+      "number": 4,
+      "key": "discover",
+      "name": "Find the problem",
+      "purpose": "Get them to say the thing that is costing them, in their words, not yours.",
+      "caller_does": ["Ask what is happening now", "Ask what it costs them", "Say nothing for four seconds after they answer"],
+      "prospects_say": [
+        { "line": "We're fine with how it works now.", "mean": "Default answer. Ask what changed this year, or what they would fix if free." },
+        { "line": "It's not really a priority.", "mean": "Priorities are about timing. Ask what would have to be true for it to become one." }
+      ],
+      "watch_out": "Jumping to the pitch the moment they mention any discomfort.",
+      "median_seconds": 70,
+      "exit_pct": 14.0,
+      "tap_options": ["Named a real problem", "Said everything's fine", "Turned the question back", "Wouldn't engage"]
+    },
+    {
+      "number": 5,
+      "key": "reframe",
+      "name": "Reframe",
+      "purpose": "Connect their problem to a way of fixing it, so your product arrives as an answer rather than a pitch.",
+      "caller_does": ["Repeat their words back", "Offer one outcome, not five features"],
+      "prospects_say": [
+        { "line": "What does it cost?", "mean": "They are close enough to price it. Give a range and ask if that is in range." },
+        { "line": "Send me an email.", "mean": "Sometimes a brush-off, sometimes real. Ask what line in the email would make them open it." }
+      ],
+      "watch_out": "A feature list. One problem, one outcome, one number.",
+      "median_seconds": 45,
+      "exit_pct": 8.0,
+      "tap_options": ["It landed", "Asked about price", "Asked for an email", "Didn't see the link"]
+    },
+    {
+      "number": 6,
+      "key": "objections",
+      "name": "Handle the pushback",
+      "purpose": "Let the objection be said fully, then answer the actual one instead of the one you expected.",
+      "caller_does": ["Let them finish the sentence", "Name the objection out loud before answering it"],
+      "prospects_say": [
+        { "line": "Now isn't a good time.", "mean": "About today, not the product. Ask when a good time is and mean it." },
+        { "line": "We don't have budget.", "mean": "Often a priority statement. Ask what would justify the budget rather than cutting the number." }
+      ],
+      "watch_out": "Answering the objection before they have finished saying it.",
+      "median_seconds": 55,
+      "exit_pct": 18.0,
+      "tap_options": ["Came back in", "Stood firm", "Raised a second objection", "Went quiet on me"]
+    },
+    {
+      "number": 7,
+      "key": "proof",
+      "name": "Prove it",
+      "purpose": "Give one piece of evidence they can check, sized to the thirty seconds you have left.",
+      "caller_does": ["Use one comparable customer or number", "Offer the proof in the follow-up, not the pitch"],
+      "prospects_say": [
+        { "line": "Who else uses it?", "mean": "They are testing whether you are real. One name beats three logos." },
+        { "line": "I'd have to look into it.", "mean": "They have no reason to believe the effort is theirs. Offer to send the two things they would look at." }
+      ],
+      "watch_out": "Promising a case study you then fail to send.",
+      "median_seconds": 40,
+      "exit_pct": 6.0,
+      "tap_options": ["Believed it", "Asked for references", "Wanted proof of numbers", "Still unsure"]
+    },
+    {
+      "number": 8,
+      "key": "close",
+      "name": "Ask for the meeting",
+      "purpose": "Convert the conversation into a next step with a day and a time attached to it.",
+      "caller_does": ["Ask for a specific slot", "Confirm it before you hang up"],
+      "prospects_say": [
+        { "line": "What do I need to do?", "mean": "They want the mechanics. Answer with a calendar move, not a website link." },
+        { "line": "I'll think about it.", "mean": "Rarely means yes. Offer the smallest next step: ten minutes, their calendar, this week." }
+      ],
+      "watch_out": "Ending on 'I'll follow up' with no date attached to either side.",
+      "median_seconds": 35,
+      "exit_pct": 15.0,
+      "tap_options": ["Booked a meeting", "Asked me to follow up", "Said no", "Ran out of time"]
+    }
+  ],
+  "outcomes": [
+    { "key": "meeting_booked", "label": "Meeting booked", "tone": "good", "meta": "A slot was agreed before the call ended." },
+    { "key": "follow_up_agreed", "label": "Follow-up agreed", "tone": "warm", "meta": "They asked to be contacted, with no meeting set." },
+    { "key": "not_now", "label": "Not right now", "tone": "warm", "meta": "Interested, wrong moment. Worth a dated retry." },
+    { "key": "not_a_fit", "label": "Not a fit", "tone": "bad", "meta": "Company, size or need does not match what you sell." },
+    { "key": "wrong_person", "label": "Wrong person", "tone": "bad", "meta": "Someone else owns this. Ask for the name before you hang up." },
+    { "key": "refused", "label": "Refused outright", "tone": "bad", "meta": "Ended the call. Do not dial this number again this quarter." },
+    { "key": "no_answer", "label": "No answer / voicemail", "tone": "bad", "meta": "Reached nobody. The stage trail stops where it stopped." }
+  ]
+}

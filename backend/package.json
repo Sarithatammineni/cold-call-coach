@@ -1,0 +1,22 @@
+{
+  "name": "cold-call-coach-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Render-hosted API for the cold-call screen: calls, stage results, outcomes, LLM coaching.",
+  "main": "src/server.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "check": "node --check src/server.js && node --check src/db.js && node --check src/llm.js && node --check src/routes.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

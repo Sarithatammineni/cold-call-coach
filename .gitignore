@@ -1,0 +1,18 @@
+node_modules/
+dist/
+build/
+.vercel/
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.sample
+*.log
+.DS_Store
+Thumbs.db
+coverage/
+.vite/
+
+# workspace + local captures, never published
+.freebuff/
+shots/
