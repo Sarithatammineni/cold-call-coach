@@ -14,7 +14,7 @@ is saved, and a second screen lists past calls with the stage each one reached.
 | --- | --- |
 | **Vercel app (the screen)** | https://cold-call-coach-rose.vercel.app |
 | **Render health endpoint** | https://cold-call-coach-api.onrender.com/health |
-| **GitHub repo** | https://github.com/Sarithatammineni/cold_callers |
+| **GitHub repo** | https://github.com/Sarithatammineni/cold-call-coach |
 
 ### Deploy status
 
