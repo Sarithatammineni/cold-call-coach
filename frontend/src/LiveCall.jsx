@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from './api.js';
 import sheet from './stageSheet.json';
+import { ThemeToggle } from './theme.jsx';
 
 const pad = (n) => String(n).padStart(2, '0');
 const clock = (secs) => `${pad(Math.floor(secs / 60))}:${pad(Math.max(0, secs % 60))}`;
@@ -54,11 +55,15 @@ export default function LiveCall({ initial, stages, onChange, onFinished }) {
       [stage.number]: { taps: [], words: '', ...(prev[stage.number] || {}), ...patch },
     }));
 
+  // Functional update: two quick taps must both land, not overwrite each
+  // other from the same stale render.
   const toggleTap = (label) =>
-    setAnswer({
-      taps: answer.taps.includes(label)
-        ? answer.taps.filter((t) => t !== label)
-        : [...answer.taps, label],
+    setAnswers((prev) => {
+      const current = prev[stage.number] || { taps: [], words: '' };
+      const taps = current.taps.includes(label)
+        ? current.taps.filter((t) => t !== label)
+        : [...current.taps, label];
+      return { ...prev, [stage.number]: { ...current, taps } };
     });
 
   async function saveStage({ advance = true, skipped = false } = {}) {
@@ -127,7 +132,13 @@ export default function LiveCall({ initial, stages, onChange, onFinished }) {
         error:
           err.code === 'LLM_NOT_CONFIGURED'
             ? 'No LLM key on the server, so no coaching line.'
-            : err.message,
+            : err.code === 'LLM_TIMEOUT'
+              ? 'The coach took too long to answer. Tap it again.'
+              : err.code === 'LLM_QUOTA'
+                ? 'The coach is out of model quota for now. The rest of the screen still works — try again later.'
+                : err.code === 'LLM_ERROR' || err.code === 'LLM_EMPTY'
+                  ? 'The coach could not answer just now. Tap it again.'
+                  : err.message,
       });
     }
   }
@@ -256,12 +267,11 @@ export default function LiveCall({ initial, stages, onChange, onFinished }) {
     <>
       <header className="topbar">
         <div className="topbar__title">
-          <div className="brand">
-            <span className="brand__dot brand__dot--live" /> On a call
-          </div>
+          <div className="brand">on a call</div>
           <h1 style={{ marginTop: 4 }}>{call.prospect_name}</h1>
           {call.company && <p className="topbar__sub">{call.company}</p>}
         </div>
+        <ThemeToggle />
         <span className="timer">{clock(onCall)}</span>
       </header>
 
@@ -274,10 +284,10 @@ export default function LiveCall({ initial, stages, onChange, onFinished }) {
               saved.includes(s.number) && i !== stageIndex ? ' is-done' : ''
             }`}
             onClick={() => goToStage(i)}
-            title={s.name}
+            title={`${s.name}${saved.includes(s.number) ? ' — saved' : ''}`}
+            aria-current={i === stageIndex ? 'step' : undefined}
           >
             <span className="stagechip__n">{s.number}</span>
-            <span className="stagechip__tick">{saved.includes(s.number) ? '✓' : i === stageIndex ? '●' : ''}</span>
           </button>
         ))}
       </nav>
@@ -295,9 +305,7 @@ export default function LiveCall({ initial, stages, onChange, onFinished }) {
           {stage.name}
         </h2>
         <p className="purpose">
-          <b style={{ color: 'var(--text-faint)', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', marginRight: 8 }}>
-            For
-          </b>
+          <span className="purpose__k">for</span>
           {stage.purpose}
         </p>
 
@@ -380,13 +388,10 @@ export default function LiveCall({ initial, stages, onChange, onFinished }) {
         </div>
         {nextStage ? (
           <button className="next-up" type="button" onClick={() => goToStage(stageIndex + 1)}>
-            <span>
-              <span className="next-up__k">Stage {nextStage.number}</span>
-              <span className="next-up__v">
-                {nextStage.name} — {nextStage.purpose}
-              </span>
+            <span className="next-up__k">next · stage {nextStage.number}</span>
+            <span className="next-up__v">
+              {nextStage.name} — {nextStage.purpose}
             </span>
-            <span className="next-up__arrow">›</span>
           </button>
         ) : (
           <p className="purpose" style={{ marginTop: 0 }}>

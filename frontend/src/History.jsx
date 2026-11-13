@@ -24,14 +24,15 @@ export default function History({ stages }) {
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [live, setLive] = useState(false);
 
   const stageName = useMemo(
     () => new Map((stages || []).map((s) => [s.number, s.name])),
     [stages]
   );
 
-  const load = useCallback(async () => {
-    setStatus('loading');
+  const load = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setStatus('loading');
     setError(null);
     try {
       const res = await api.listCalls(100);
@@ -39,13 +40,29 @@ export default function History({ stages }) {
       setStatus('ready');
     } catch (err) {
       setError(err);
-      setStatus('error');
+      // A failed background refresh must not blank a list that is already good.
+      setStatus((prev) => (silent && prev === 'ready' ? 'ready' : 'error'));
     }
   }, []);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // The server pushes every write; one event, one refresh, no polling.
+  useEffect(() => {
+    return api.subscribe({
+      onEvent: () => load({ silent: true }),
+      onStatus: setLive,
+    });
+  }, [load]);
+
+  // Only while the stream is down: a slow refresh keeps the list honest.
+  useEffect(() => {
+    if (live) return undefined;
+    const id = setInterval(() => load({ silent: true }), 15000);
+    return () => clearInterval(id);
+  }, [live, load]);
 
   const filtered = useMemo(() => {
     if (filter === 'all') return calls;
@@ -78,6 +95,8 @@ export default function History({ stages }) {
 
   return (
     <>
+      {live && <p className="live-note">updating live</p>}
+
       <div className="filters">
         <button
           className={`filter${filter === 'all' ? ' is-on' : ''}`}
@@ -217,7 +236,7 @@ function CallRow({ call, stageName }) {
                       ))}
                     </div>
                   )}
-                  {r.prospect_words && <div className="trail__words">“{r.prospect_words}”</div>}
+                  {r.prospect_words && <div className="trail__words">{r.prospect_words}</div>}
                 </div>
               ))}
             </div>

@@ -8,6 +8,7 @@ build/
 !.env.example
 !.env.sample
 *.log
+.supabase-token
 .DS_Store
 Thumbs.db
 coverage/

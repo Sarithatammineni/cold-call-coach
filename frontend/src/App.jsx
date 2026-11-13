@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import sheet from './stageSheet.json';
-import { api, API_URL } from './api.js';
+import { api } from './api.js';
 import LiveCall from './LiveCall.jsx';
 import History from './History.jsx';
+import { ThemeToggle } from './theme.jsx';
 
 const ACTIVE_KEY = 'ccc:active:v1';
 
@@ -29,10 +30,10 @@ function persistActive(state) {
 
 export default function App() {
   const [stages, setStages] = useState(sheet.stages);
-  const [stagesFromDb, setStagesFromDb] = useState(false);
+
   const [active, setActive] = useState(loadActive);
   const [view, setView] = useState(() => (loadActive() ? 'live' : 'start'));
-  const [health, setHealth] = useState(null);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -41,17 +42,11 @@ export default function App() {
       .then((res) => {
         if (!cancelled && Array.isArray(res.stages) && res.stages.length) {
           setStages(res.stages);
-          setStagesFromDb(true);
         }
       })
       .catch(() => {
         /* bundled sheet stays on screen; nothing here is worth interrupting for */
       });
-
-    api
-      .health()
-      .then((h) => !cancelled && setHealth(h))
-      .catch(() => !cancelled && setHealth({ status: 'unreachable' }));
 
     return () => {
       cancelled = true;
@@ -78,20 +73,12 @@ export default function App() {
     setView('history');
   }, []);
 
-  const dbLive = health?.db?.ok && health?.llm?.configured;
-
   return (
     <div className={`app${view === 'history' ? ' app--wide' : ''}`}>
       {view !== 'live' && (
         <header className="topbar">
           <div className="topbar__title">
-            <div className="brand">
-              <span className={`brand__dot${dbLive ? ' brand__dot--live' : ''}`} />
-              {stagesFromDb ? 'Cold call coach' : 'Cold call coach'}
-            </div>
-            <h1 style={{ marginTop: 4 }}>
-              {view === 'history' ? 'Past calls' : 'Start a call'}
-            </h1>
+            <h1>{view === 'history' ? 'Past calls' : 'Start a call'}</h1>
           </div>
           {view === 'history' ? (
             <button className="btn btn--ghost" onClick={() => setView('start')}>
@@ -102,6 +89,7 @@ export default function App() {
               Past calls
             </button>
           )}
+          <ThemeToggle />
         </header>
       )}
 
@@ -118,24 +106,7 @@ export default function App() {
 
       {view === 'history' && <History stages={stages} />}
 
-      <footer className="footer-note">
-        {health?.status === 'ok' ? (
-          <>
-            Connected · {API_URL}
-            <br />
-            LLM {health.llm?.configured ? health.llm.model : 'not configured'} ·{' '}
-            {stagesFromDb ? 'stages from Supabase' : 'stages bundled (Supabase not reachable)'}
-          </>
-        ) : health === null ? (
-          'Checking the server…'
-        ) : (
-          <>
-            Server asleep or unreachable — {API_URL}
-            <br />
-            Render free instances wake on the first request, up to about a minute.
-          </>
-        )}
-      </footer>
+      <div className="spacer" />
     </div>
   );
 }
@@ -221,11 +192,11 @@ function StartScreen({ onStart }) {
 
       <section className="card">
         <div className="section__label">The eight stages</div>
-        <ol className="say" style={{ counterReset: 's' }}>
+        <ol className="stage-index">
           {sheet.stages.map((s) => (
-            <li key={s.number} style={{ borderLeftColor: 'var(--accent)' }}>
+            <li key={s.number}>
               <b>{s.name}</b>
-              <span className="say__mean">{s.purpose}</span>
+              <span>{s.purpose}</span>
             </li>
           ))}
         </ol>
