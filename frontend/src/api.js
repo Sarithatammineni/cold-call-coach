@@ -35,7 +35,46 @@ async function request(path, options = {}) {
   return data;
 }
 
+/**
+ * Live updates. The server pushes every write down this stream, so a screen
+ * never has to poll to stay current. The browser reconnects by itself; until
+ * it does, `onStatus(false)` lets the caller fall back to a slow refresh.
+ */
+export function subscribe({ onEvent, onStatus } = {}) {
+  if (typeof EventSource === 'undefined') {
+    onStatus?.(false);
+    return () => {};
+  }
+
+  let source;
+  try {
+    source = new EventSource(`${API_URL}/api/stream`);
+  } catch {
+    onStatus?.(false);
+    return () => {};
+  }
+
+  const handler = (name) => (event) => {
+    let data = null;
+    try {
+      data = event.data ? JSON.parse(event.data) : null;
+    } catch {
+      /* a malformed frame must not take the screen down */
+    }
+    onEvent?.(name, data);
+  };
+
+  const names = ['call.opened', 'stage.saved', 'call.closed'];
+  for (const name of names) source.addEventListener(name, handler(name));
+
+  source.onopen = () => onStatus?.(true);
+  source.onerror = () => onStatus?.(false);
+
+  return () => source.close();
+}
+
 export const api = {
+  subscribe,
   health: () => request('/health'),
   stages: () => request('/api/stages'),
   startCall: (payload) =>

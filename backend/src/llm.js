@@ -1,7 +1,10 @@
 const GEMINI_URL =
   'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent';
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-const TIMEOUT_MS = 12000;
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+// The model occasionally stalls for a few seconds on the free tier. A 12s
+// ceiling turned that into a failed coaching tap; 18s rides it out without
+// leaving a caller waiting absurdly long. Overridable for tests.
+const TIMEOUT_MS = Number(process.env.LLM_TIMEOUT_MS) || 18000;
 
 export const llmConfigured = Boolean(process.env.GEMINI_API_KEY);
 
@@ -34,7 +37,11 @@ async function generate(systemInstruction, parts, generationConfig = {}) {
         contents: [{ role: 'user', parts }],
         generationConfig: {
           temperature: 0.4,
-          maxOutputTokens: 400,
+          maxOutputTokens: 800,
+          // gemini-3.x is a thinking model: its reasoning tokens eat the
+          // output budget and truncate the JSON. Coaching is a small,
+          // latency-sensitive task — think less, answer now.
+          thinkingConfig: { thinkingBudget: 0 },
           ...generationConfig,
         },
       }),
@@ -42,8 +49,16 @@ async function generate(systemInstruction, parts, generationConfig = {}) {
 
     const data = await res.json();
     if (!res.ok) {
+      // 429 is not a bug: the free tier's quota is spent, and the caller needs
+      // to know that rather than "something went wrong".
+      if (res.status === 429) {
+        const quota = new Error('The coaching model has reached its usage quota for now.');
+        quota.status = 429;
+        quota.code = 'LLM_QUOTA';
+        throw quota;
+      }
       const err = new Error(data?.error?.message || `LLM request failed (${res.status}).`);
-      err.status = res.status === 429 ? 429 : 502;
+      err.status = 502;
       err.code = 'LLM_ERROR';
       throw err;
     }
@@ -62,7 +77,7 @@ async function generate(systemInstruction, parts, generationConfig = {}) {
     return text;
   } catch (e) {
     if (e.name === 'AbortError') {
-      const err = new Error('LLM timed out.');
+      const err = new Error('The model did not answer in time.');
       err.status = 504;
       err.code = 'LLM_TIMEOUT';
       throw err;
